@@ -382,7 +382,7 @@ export default function Home() {
             <h4 className="font-rounded text-lg font-bold text-slate-800">Share & Follow</h4>
             <div className="mt-3 flex flex-wrap gap-2">
               <a
-                href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fglobalenglish.school"
+                href="https://www.facebook.com/GlobalEnglishYerevan"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-700 ring-1 ring-cyan-200 transition hover:bg-cyan-100 hover:text-cyan-700"
@@ -393,7 +393,7 @@ export default function Home() {
                 Facebook
               </a>
               <a
-                href="https://www.instagram.com/"
+                href="https://www.instagram.com/globalenglisharmenia?igsh=MTduNXRvM3Z3bXkyZA=="
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-700 ring-1 ring-cyan-200 transition hover:bg-cyan-100 hover:text-cyan-700"
@@ -413,17 +413,6 @@ export default function Home() {
                   <path d="M20.52 3.48A11.86 11.86 0 0 0 12.06 0C5.52 0 .2 5.32.2 11.86c0 2.08.54 4.11 1.56 5.9L0 24l6.4-1.68a11.81 11.81 0 0 0 5.66 1.45h.01c6.54 0 11.86-5.32 11.86-11.86 0-3.17-1.23-6.14-3.41-8.43zM12.07 21.7h-.01a9.8 9.8 0 0 1-4.99-1.37l-.36-.21-3.8 1 1.01-3.7-.23-.38a9.79 9.79 0 0 1-1.5-5.18c0-5.43 4.42-9.85 9.86-9.85 2.63 0 5.1 1.02 6.96 2.88a9.77 9.77 0 0 1 2.88 6.97c0 5.43-4.42 9.84-9.85 9.84zm5.4-7.37c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.65.08-.3-.15-1.26-.46-2.4-1.46-.88-.79-1.48-1.76-1.66-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.08-.15-.67-1.62-.92-2.21-.24-.58-.48-.5-.67-.5h-.57c-.2 0-.52.08-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.87 1.22 3.06c.15.2 2.1 3.2 5.08 4.48.71.31 1.26.5 1.69.64.71.23 1.36.2 1.88.12.57-.08 1.76-.72 2.01-1.42.25-.7.25-1.31.17-1.42-.07-.12-.27-.2-.57-.35z" />
                 </svg>
                 WhatsApp
-              </a>
-              <a
-                href="https://t.me/share/url?url=https%3A%2F%2Fglobalenglish.school&text=Discover%20Global%20English%20for%20kids"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-700 ring-1 ring-cyan-200 transition hover:bg-cyan-100 hover:text-cyan-700"
-              >
-                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">
-                  <path d="M12 0C5.37 0 0 5.37 0 12c0 6.63 5.37 12 12 12s12-5.37 12-12C24 5.37 18.63 0 12 0zm5.9 8.2-1.97 9.28c-.15.66-.54.82-1.09.51l-3.02-2.22-1.46 1.41c-.16.16-.3.3-.61.3l.22-3.13 5.7-5.15c.25-.22-.05-.34-.38-.12l-7.05 4.44-3.04-.95c-.66-.21-.67-.66.14-.98l11.9-4.59c.55-.2 1.03.13.85.97z" />
-                </svg>
-                Telegram
               </a>
             </div>
             <p className="mt-3 text-xs text-slate-500">
