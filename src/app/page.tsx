@@ -28,13 +28,13 @@ export default function Home() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-6">
           <a
             href="#home"
-            className="font-rounded inline-flex items-center gap-2 text-2xl font-bold text-cyan-600"
+            className="font-rounded inline-flex items-center gap-2 text-xl font-bold text-cyan-600 sm:text-2xl"
           >
             <Image
               src="/parrot-logo.png"
               alt="Global English parrot logo"
-              width={34}
-              height={34}
+              width={30}
+              height={30}
               className="rounded-full ring-2 ring-cyan-200"
               priority
             />
@@ -103,7 +103,7 @@ export default function Home() {
       <main id="home">
         <section className="relative overflow-hidden bg-gradient-to-br from-cyan-100 via-white to-cyan-50">
           <div className="pointer-events-none absolute inset-0 z-30" aria-hidden="true">
-            <div className="parrot-fly absolute left-0 top-14">
+            <div className="parrot-fly absolute left-0 top-16">
               <svg viewBox="0 0 80 52" className="h-14 w-14 drop-shadow-sm md:h-16 md:w-16">
                 <ellipse cx="40" cy="30" rx="16" ry="11" fill="#e11d72" />
                 <circle cx="28" cy="23" r="9" fill="#f472b6" />
@@ -134,7 +134,7 @@ export default function Home() {
               </svg>
             </div>
           </div>
-          <div className="relative z-10 mx-auto grid max-w-6xl gap-10 px-4 py-20 md:grid-cols-2 md:px-6 md:py-24">
+          <div className="relative z-10 mx-auto grid max-w-6xl gap-8 px-4 py-14 sm:py-16 md:grid-cols-2 md:gap-10 md:px-6 md:py-24">
             <motion.div
               initial={{ opacity: 0, x: -28 }}
               animate={{ opacity: 1, x: 0 }}
@@ -143,23 +143,23 @@ export default function Home() {
               <p className="mb-3 inline-block rounded-full bg-cyan-500/10 px-4 py-1 text-sm font-bold text-cyan-700">
                 Fun. Friendly. Future-ready.
               </p>
-              <h1 className="font-rounded text-4xl font-extrabold leading-tight text-slate-800 md:text-5xl">
+              <h1 className="font-rounded text-3xl font-extrabold leading-tight text-slate-800 sm:text-4xl md:text-5xl">
                 Unlock the World with Global English!
               </h1>
-              <p className="mt-4 max-w-xl text-lg text-slate-600">
+              <p className="mt-4 max-w-xl text-base text-slate-600 sm:text-lg">
                 We help children gain confidence in English through playful lessons, caring
                 teachers, and inspiring global learning adventures.
               </p>
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="mt-6 grid grid-cols-1 gap-3 sm:mt-8 sm:flex sm:flex-wrap">
                 <a
                   href="#courses"
-                  className="rounded-full bg-brand px-6 py-3 font-bold text-white shadow-sm transition hover:brightness-95"
+                  className="rounded-full bg-brand px-6 py-3 text-center font-bold text-white shadow-sm transition hover:brightness-95"
                 >
                   Explore Courses
                 </a>
                 <a
                   href="#about"
-                  className="rounded-full border border-cyan-200 px-6 py-3 font-bold text-cyan-700 transition hover:bg-cyan-50"
+                  className="rounded-full border border-cyan-200 px-6 py-3 text-center font-bold text-cyan-700 transition hover:bg-cyan-50"
                 >
                   Learn About Us
                 </a>
@@ -167,7 +167,7 @@ export default function Home() {
             </motion.div>
 
             <motion.div
-              className="flex items-center justify-center"
+              className="hidden items-center justify-center md:flex"
               initial={{ opacity: 0, x: 28 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
@@ -353,7 +353,7 @@ export default function Home() {
       </main>
 
       <footer className="border-t border-cyan-100 bg-cyan-50/40">
-        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 md:grid-cols-3 md:px-6">
+        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-3 md:px-6">
           <div>
             <h3 className="font-rounded text-xl font-bold text-cyan-700">Global English</h3>
             <p className="mt-3 max-w-sm text-sm text-slate-600">
