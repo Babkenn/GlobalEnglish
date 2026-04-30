@@ -1,19 +1,74 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { defaultLanguage, translations, type Language } from "@/i18n";
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [language, setLanguage] = useState<Language>(defaultLanguage);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isCarouselPaused, setIsCarouselPaused] = useState(false);
+  const t = translations[language];
+  const galleryTrackRef = useRef<HTMLDivElement | null>(null);
 
   const navItems = [
-    { href: "#about", label: "About us" },
-    { href: "#teachers", label: "Our teachers" },
-    { href: "#courses", label: "Courses" },
-    { href: "#programmes", label: "Programmes" },
-    { href: "#jobs", label: "Jobs" },
+    { href: "#about", label: t.nav.about },
+    { href: "#teachers", label: t.nav.teachers },
+    { href: "#courses", label: t.nav.courses },
+    { href: "#programmes", label: t.nav.programmes },
+    { href: "#jobs", label: t.nav.jobs },
   ];
+
+  const languageCodes: Language[] = ["hy", "en", "ru"];
+  const languageOptions = languageCodes.map((code) => ({
+    value: code,
+    label: t.languageNames[code],
+  }));
+  const galleryImages = [
+    ...Array.from({ length: 27 }, (_, index) => `/school-gallery/${index + 1}.jpeg`),
+    "/school-gallery/28.jpg",
+    "/school-gallery/29.jpg",
+    "/school-gallery/30.webp",
+    "/school-gallery/31.jpg",
+  ];
+  const loopedGalleryImages = [...galleryImages, ...galleryImages];
+
+  useEffect(() => {
+    if (isCarouselPaused) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      const track = galleryTrackRef.current;
+      if (!track) {
+        return;
+      }
+
+      const halfWidth = track.scrollWidth / 2;
+      if (track.scrollLeft >= halfWidth) {
+        track.scrollLeft -= halfWidth;
+      } else {
+        track.scrollLeft += 1;
+      }
+    }, 28);
+
+    return () => window.clearInterval(intervalId);
+  }, [isCarouselPaused]);
+
+  const moveGallery = (direction: "prev" | "next") => {
+    const track = galleryTrackRef.current;
+    if (!track) {
+      return;
+    }
+
+    const step = 340;
+    track.scrollBy({
+      left: direction === "next" ? step : -step,
+      behavior: "smooth",
+    });
+  };
 
   const reveal = {
     initial: { opacity: 0, y: 22 },
@@ -25,14 +80,14 @@ export default function Home() {
   return (
     <div className="bg-white text-slate-800">
       <header className="sticky top-0 z-50 border-b border-cyan-100 bg-white/90 shadow-[0_2px_10px_rgba(6,182,212,0.08)] backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-6">
+        <div className="mx-auto flex h-16 max-w-6xl items-center px-4 md:px-6">
           <a
             href="#home"
-            className="font-rounded inline-flex items-center gap-2 text-xl font-bold text-cyan-600 sm:text-2xl"
+            className="font-rounded inline-flex shrink-0 items-center gap-2 text-xl font-bold text-cyan-600 sm:text-2xl"
           >
             <Image
               src="/parrot-logo.png"
-              alt="Global English parrot logo"
+              alt={t.header.logoAlt}
               width={30}
               height={30}
               className="rounded-full ring-2 ring-cyan-200"
@@ -40,36 +95,13 @@ export default function Home() {
             />
             Global English
           </a>
-          <button
-            type="button"
-            className="rounded-md border border-cyan-200 p-2 text-cyan-700 md:hidden"
-            aria-label="Toggle navigation menu"
-            aria-expanded={menuOpen}
-            aria-controls="mobile-menu"
-            onClick={() => setMenuOpen((prev) => !prev)}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </button>
-          <nav className="hidden md:block">
-            <ul className="flex items-center gap-6 text-sm font-bold lg:text-base">
+          <nav className="hidden md:ml-10 md:block md:flex-1">
+            <ul className="flex items-center justify-center gap-6 text-sm font-bold lg:gap-7 lg:text-base">
               {navItems.map((item) => (
                 <li key={item.href}>
                   <a
                     href={item.href}
-                    className="rounded-full px-3 py-1.5 text-slate-700 transition hover:bg-cyan-50 hover:text-cyan-700"
+                    className="whitespace-nowrap rounded-full px-3 py-1.5 text-slate-700 transition hover:bg-cyan-50 hover:text-cyan-700"
                   >
                     {item.label}
                   </a>
@@ -77,6 +109,43 @@ export default function Home() {
               ))}
             </ul>
           </nav>
+          <div className="ml-auto flex items-center gap-3 pl-4">
+            <select
+              id="header-language"
+              className="w-36 rounded-full border border-cyan-200 bg-white px-3 py-1.5 text-sm font-bold text-cyan-700 shadow-sm transition focus:border-cyan-400 focus:outline-none"
+              value={language}
+              onChange={(event) => setLanguage(event.target.value as Language)}
+            >
+              {languageOptions.map((option) => (
+                <option key={`header-${option.value}`} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              className="rounded-md border border-cyan-200 p-2 text-cyan-700 md:hidden"
+              aria-label={t.header.toggleMenu}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
+              onClick={() => setMenuOpen((prev) => !prev)}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
         <nav
           id="mobile-menu"
@@ -85,6 +154,21 @@ export default function Home() {
           }`}
         >
           <ul className="space-y-1 px-4 py-3 text-base font-bold">
+            <li>
+              <div className="mb-2 flex items-center justify-end">
+                <select
+                  className="rounded-full border border-cyan-200 bg-white px-3 py-1.5 text-sm font-bold text-cyan-700 focus:border-cyan-400 focus:outline-none"
+                  value={language}
+                  onChange={(event) => setLanguage(event.target.value as Language)}
+                >
+                  {languageOptions.map((option) => (
+                    <option key={`mobile-${option.value}`} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </li>
             {navItems.map((item) => (
               <li key={item.href}>
                 <a
@@ -141,27 +225,26 @@ export default function Home() {
               transition={{ duration: 0.6, ease: "easeOut" }}
             >
               <p className="mb-3 inline-block rounded-full bg-cyan-500/10 px-4 py-1 text-sm font-bold text-cyan-700">
-                Fun. Friendly. Future-ready.
+                {t.hero.badge}
               </p>
               <h1 className="font-rounded text-3xl font-extrabold leading-tight text-slate-800 sm:text-4xl md:text-5xl">
-                Unlock the World with Global English!
+                {t.hero.title}
               </h1>
               <p className="mt-4 max-w-xl text-base text-slate-600 sm:text-lg">
-                We help children gain confidence in English through playful lessons, caring
-                teachers, and inspiring global learning adventures.
+                {t.hero.description}
               </p>
               <div className="mt-6 grid grid-cols-1 gap-3 sm:mt-8 sm:flex sm:flex-wrap">
                 <a
                   href="#courses"
                   className="rounded-full bg-brand px-6 py-3 text-center font-bold text-white shadow-sm transition hover:brightness-95"
                 >
-                  Explore Courses
+                  {t.hero.exploreCourses}
                 </a>
                 <a
                   href="#about"
                   className="rounded-full border border-cyan-200 px-6 py-3 text-center font-bold text-cyan-700 transition hover:bg-cyan-50"
                 >
-                  Learn About Us
+                  {t.hero.learnAboutUs}
                 </a>
               </div>
             </motion.div>
@@ -176,7 +259,7 @@ export default function Home() {
                 <svg
                   viewBox="0 0 480 340"
                   role="img"
-                  aria-label="Children learning English"
+                  aria-label={t.hero.illustrationLabel}
                   className="h-auto w-full max-w-md"
                 >
                   <rect width="480" height="340" rx="24" fill="#e6fdfe" />
@@ -212,38 +295,121 @@ export default function Home() {
         </section>
 
         <motion.section id="about" className="mx-auto max-w-6xl px-4 py-16 md:px-6" {...reveal}>
-          <h2 className="font-rounded text-3xl font-extrabold text-slate-800">About Us</h2>
-          <p className="mt-4 max-w-3xl text-lg text-slate-600">
-            At Global English, our mission is to make language learning joyful and practical. We
-            combine games, stories, and interactive speaking tasks to help children build real
-            communication skills and global confidence.
-          </p>
+          <h2 className="font-rounded text-3xl font-extrabold text-slate-800">{t.about.title}</h2>
+          <div className="mt-4 max-w-4xl space-y-4 text-base leading-relaxed text-slate-600 sm:text-lg">
+            {t.about.paragraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
+        </motion.section>
+
+        <motion.section className="bg-cyan-50/60 py-16" {...reveal}>
+          <div className="mx-auto max-w-6xl px-4 md:px-6">
+            <h2 className="font-rounded text-3xl font-extrabold text-slate-800">{t.gallery.title}</h2>
+            <p className="mt-3 max-w-3xl text-slate-600">{t.gallery.description}</p>
+            <div className="mt-4 flex flex-wrap justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => moveGallery("prev")}
+                className="inline-flex items-center justify-center rounded-full border border-cyan-200 bg-white p-2.5 text-cyan-700 transition hover:bg-cyan-50"
+                aria-label={t.gallery.previous}
+                title={t.gallery.previous}
+              >
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor">
+                  <path
+                    d="M15 19l-7-7 7-7"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsCarouselPaused((prev) => !prev)}
+                className="inline-flex items-center justify-center rounded-full border border-cyan-200 bg-white p-2.5 text-cyan-700 transition hover:bg-cyan-50"
+                aria-label={isCarouselPaused ? t.gallery.play : t.gallery.pause}
+                title={isCarouselPaused ? t.gallery.play : t.gallery.pause}
+              >
+                {isCarouselPaused ? (
+                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">
+                    <rect x="6" y="5" width="4" height="14" rx="1" />
+                    <rect x="14" y="5" width="4" height="14" rx="1" />
+                  </svg>
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={() => moveGallery("next")}
+                className="inline-flex items-center justify-center rounded-full border border-cyan-200 bg-white p-2.5 text-cyan-700 transition hover:bg-cyan-50"
+                aria-label={t.gallery.next}
+                title={t.gallery.next}
+              >
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor">
+                  <path
+                    d="M9 5l7 7-7 7"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div
+              ref={galleryTrackRef}
+              className="mt-4 overflow-x-auto rounded-3xl border border-cyan-100 bg-white p-3 shadow-sm [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            >
+              <div className="flex w-max gap-3">
+                {loopedGalleryImages.map((src, index) => (
+                  <div
+                    key={`${src}-${index}`}
+                    className="relative h-52 w-72 overflow-hidden rounded-2xl bg-cyan-100 sm:h-56 sm:w-80"
+                  >
+                    <button
+                      type="button"
+                      className="h-full w-full"
+                      onClick={() => setSelectedImage(src)}
+                      aria-label={`${t.gallery.imageAltPrefix} ${index + 1}`}
+                    >
+                      <Image
+                        src={src}
+                        alt={`${t.gallery.imageAltPrefix} ${index + 1}`}
+                        fill
+                        sizes="(max-width: 640px) 90vw, 320px"
+                        className="object-cover transition duration-300 hover:scale-105"
+                      />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </motion.section>
 
         <motion.section id="teachers" className="bg-cyan-50/60 py-16" {...reveal}>
           <div className="mx-auto max-w-6xl px-4 md:px-6">
-            <h2 className="font-rounded text-3xl font-extrabold text-slate-800">Our Teachers</h2>
+            <h2 className="font-rounded text-3xl font-extrabold text-slate-800">
+              {t.teachers.title}
+            </h2>
             <div className="mt-8 grid gap-5 md:grid-cols-3">
               <article className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-cyan-100">
                 <div className="mb-3 h-20 w-20 rounded-full bg-cyan-100"></div>
-                <h3 className="font-rounded text-xl font-bold">Ms. Emma</h3>
-                <p className="text-slate-600">
-                  Fun fact: loves teaching with songs and puppets.
-                </p>
+                <h3 className="font-rounded text-xl font-bold">{t.teachers.cards[0].name}</h3>
+                <p className="text-slate-600">{t.teachers.cards[0].fact}</p>
               </article>
               <article className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-cyan-100">
                 <div className="mb-3 h-20 w-20 rounded-full bg-cyan-100"></div>
-                <h3 className="font-rounded text-xl font-bold">Mr. Leo</h3>
-                <p className="text-slate-600">
-                  Fun fact: creates mini speaking adventures each week.
-                </p>
+                <h3 className="font-rounded text-xl font-bold">{t.teachers.cards[1].name}</h3>
+                <p className="text-slate-600">{t.teachers.cards[1].fact}</p>
               </article>
               <article className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-cyan-100">
                 <div className="mb-3 h-20 w-20 rounded-full bg-cyan-100"></div>
-                <h3 className="font-rounded text-xl font-bold">Ms. Sara</h3>
-                <p className="text-slate-600">
-                  Fun fact: turns grammar into playful team challenges.
-                </p>
+                <h3 className="font-rounded text-xl font-bold">{t.teachers.cards[2].name}</h3>
+                <p className="text-slate-600">{t.teachers.cards[2].fact}</p>
               </article>
             </div>
           </div>
@@ -254,98 +420,95 @@ export default function Home() {
           className="mx-auto max-w-6xl px-4 py-16 md:px-6"
           {...reveal}
         >
-          <h2 className="font-rounded text-3xl font-extrabold text-slate-800">Courses</h2>
+          <h2 className="font-rounded text-3xl font-extrabold text-slate-800">{t.courses.title}</h2>
           <div className="mt-8 grid gap-5 md:grid-cols-3">
             <article className="rounded-2xl border border-cyan-100 p-5">
-              <h3 className="font-rounded text-xl font-bold text-cyan-700">Toddlers</h3>
-              <p className="mt-2 text-slate-600">
-                Ages 3-5: songs, phonics play, and first speaking confidence.
-              </p>
+              <h3 className="font-rounded text-xl font-bold text-cyan-700">
+                {t.courses.cards[0].name}
+              </h3>
+              <p className="mt-2 text-slate-600">{t.courses.cards[0].description}</p>
             </article>
             <article className="rounded-2xl border border-cyan-100 p-5">
-              <h3 className="font-rounded text-xl font-bold text-cyan-700">Primary</h3>
-              <p className="mt-2 text-slate-600">
-                Ages 6-11: reading, vocabulary building, and conversation games.
-              </p>
+              <h3 className="font-rounded text-xl font-bold text-cyan-700">
+                {t.courses.cards[1].name}
+              </h3>
+              <p className="mt-2 text-slate-600">{t.courses.cards[1].description}</p>
             </article>
             <article className="rounded-2xl border border-cyan-100 p-5">
-              <h3 className="font-rounded text-xl font-bold text-cyan-700">Teens</h3>
-              <p className="mt-2 text-slate-600">
-                Ages 12-16: communication fluency, project-based learning, exam prep.
-              </p>
+              <h3 className="font-rounded text-xl font-bold text-cyan-700">
+                {t.courses.cards[2].name}
+              </h3>
+              <p className="mt-2 text-slate-600">{t.courses.cards[2].description}</p>
             </article>
           </div>
         </motion.section>
 
         <motion.section id="programmes" className="bg-cyan-50/60 py-16" {...reveal}>
           <div className="mx-auto max-w-6xl px-4 md:px-6">
-            <h2 className="font-rounded text-3xl font-extrabold text-slate-800">Programmes</h2>
+            <h2 className="font-rounded text-3xl font-extrabold text-slate-800">
+              {t.programmes.title}
+            </h2>
             <div className="mt-8 grid gap-5 md:grid-cols-3">
               <article className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-cyan-100">
-                <h3 className="font-rounded text-xl font-bold text-cyan-700">Summer Camp</h3>
-                <p className="mt-2 text-slate-600">
-                  Creative workshops and outdoor English missions.
-                </p>
+                <h3 className="font-rounded text-xl font-bold text-cyan-700">
+                  {t.programmes.cards[0].name}
+                </h3>
+                <p className="mt-2 text-slate-600">{t.programmes.cards[0].description}</p>
               </article>
               <article className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-cyan-100">
                 <h3 className="font-rounded text-xl font-bold text-cyan-700">
-                  Intensive Weekends
+                  {t.programmes.cards[1].name}
                 </h3>
-                <p className="mt-2 text-slate-600">
-                  Focused speaking boosts with project presentations.
-                </p>
+                <p className="mt-2 text-slate-600">{t.programmes.cards[1].description}</p>
               </article>
               <article className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-cyan-100">
-                <h3 className="font-rounded text-xl font-bold text-cyan-700">Online Modules</h3>
-                <p className="mt-2 text-slate-600">
-                  Flexible remote lessons designed for modern families.
-                </p>
+                <h3 className="font-rounded text-xl font-bold text-cyan-700">
+                  {t.programmes.cards[2].name}
+                </h3>
+                <p className="mt-2 text-slate-600">{t.programmes.cards[2].description}</p>
               </article>
             </div>
           </div>
         </motion.section>
 
         <motion.section id="jobs" className="mx-auto max-w-6xl px-4 py-16 md:px-6" {...reveal}>
-          <h2 className="font-rounded text-3xl font-extrabold text-slate-800">Jobs</h2>
-          <p className="mt-3 max-w-2xl text-slate-600">
-            Passionate ESL teachers are welcome! Share your CV and a short introduction to join
-            our team.
-          </p>
+          <h2 className="font-rounded text-3xl font-extrabold text-slate-800">{t.jobs.title}</h2>
+          <p className="mt-3 max-w-2xl text-slate-600">{t.jobs.description}</p>
           <form
             className="mt-6 grid max-w-2xl gap-3"
             onSubmit={(event) => {
               event.preventDefault();
-              window.alert("Thanks! We will contact you soon.");
+              window.alert(t.jobs.form.alertSuccess);
             }}
           >
             <input
               className="rounded-xl border border-cyan-200 px-4 py-3 focus:border-cyan-400 focus:outline-none"
               type="text"
-              placeholder="Full name"
+              placeholder={t.jobs.form.fullNamePlaceholder}
               required
             />
             <input
               className="rounded-xl border border-cyan-200 px-4 py-3 focus:border-cyan-400 focus:outline-none"
               type="email"
-              placeholder="Email address"
+              placeholder={t.jobs.form.emailPlaceholder}
               required
             />
             <textarea
               className="min-h-28 rounded-xl border border-cyan-200 px-4 py-3 focus:border-cyan-400 focus:outline-none"
-              placeholder="Tell us about your teaching experience"
+              placeholder={t.jobs.form.experiencePlaceholder}
             ></textarea>
             <div className="flex flex-wrap gap-3">
               <button
                 className="rounded-full bg-brand px-6 py-3 font-bold text-white transition hover:brightness-95"
                 type="submit"
               >
-                Send Application
+                {t.jobs.form.sendApplication}
               </button>
               <a
                 className="rounded-full border border-cyan-200 px-6 py-3 font-bold text-cyan-700 transition hover:bg-cyan-50"
                 href="mailto:jobs@globalenglish.school"
               >
-                Email Instead
+                {t.jobs.form.emailInstead}
               </a>
             </div>
           </form>
@@ -357,13 +520,12 @@ export default function Home() {
           <div>
             <h3 className="font-rounded text-xl font-bold text-cyan-700">Global English</h3>
             <p className="mt-3 max-w-sm text-sm text-slate-600">
-              Helping children grow confident in English with joyful classes, caring teachers, and
-              global learning adventures.
+              {t.footer.description}
             </p>
           </div>
 
           <div>
-            <h4 className="font-rounded text-lg font-bold text-slate-800">Menu</h4>
+            <h4 className="font-rounded text-lg font-bold text-slate-800">{t.footer.menuTitle}</h4>
             <ul className="mt-3 space-y-2 text-sm font-semibold text-slate-600">
               {navItems.map((item) => (
                 <li key={`footer-${item.href}`}>
@@ -379,7 +541,22 @@ export default function Home() {
           </div>
 
           <div>
-            <h4 className="font-rounded text-lg font-bold text-slate-800">Share & Follow</h4>
+            <h4 className="font-rounded text-lg font-bold text-slate-800">
+              {t.footer.shareFollowTitle}
+            </h4>
+            <div className="mt-3 ml-auto flex w-fit items-center rounded-lg border border-cyan-200/70 bg-white/80 p-3">
+              <select
+                className="rounded-full border border-cyan-200 bg-white px-3 py-1.5 text-sm font-bold text-cyan-700 focus:border-cyan-400 focus:outline-none"
+                value={language}
+                onChange={(event) => setLanguage(event.target.value as Language)}
+              >
+                {languageOptions.map((option) => (
+                  <option key={`footer-${option.value}`} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="mt-3 flex flex-wrap gap-2">
               <a
                 href="https://www.facebook.com/GlobalEnglishYerevan"
@@ -416,14 +593,52 @@ export default function Home() {
               </a>
             </div>
             <p className="mt-3 text-xs text-slate-500">
-              Share Global English with parents and friends.
+              {t.footer.shareDescription}
             </p>
           </div>
         </div>
         <div className="border-t border-cyan-100 py-4 text-center text-sm text-slate-500">
-          © {new Date().getFullYear()} Global English. Learning made bright.
+          © {new Date().getFullYear()} Global English. {t.footer.copyrightSuffix}
         </div>
       </footer>
+
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/85 p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedImage(null)}
+          >
+            <motion.div
+              className="relative w-full max-w-5xl"
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={(event) => event.stopPropagation()}
+            >
+              <button
+                type="button"
+                onClick={() => setSelectedImage(null)}
+                className="absolute -right-2 -top-10 rounded-full bg-white px-3 py-1 text-sm font-bold text-slate-700 shadow"
+              >
+                Close
+              </button>
+              <div className="relative h-[70vh] w-full overflow-hidden rounded-2xl bg-black">
+                <Image
+                  src={selectedImage}
+                  alt={t.gallery.imageAltPrefix}
+                  fill
+                  sizes="100vw"
+                  className="object-contain"
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
