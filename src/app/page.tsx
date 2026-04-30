@@ -544,19 +544,6 @@ export default function Home() {
             <h4 className="font-rounded text-lg font-bold text-slate-800">
               {t.footer.shareFollowTitle}
             </h4>
-            <div className="mt-3 ml-auto flex w-fit items-center rounded-lg border border-cyan-200/70 bg-white/80 p-3">
-              <select
-                className="rounded-full border border-cyan-200 bg-white px-3 py-1.5 text-sm font-bold text-cyan-700 focus:border-cyan-400 focus:outline-none"
-                value={language}
-                onChange={(event) => setLanguage(event.target.value as Language)}
-              >
-                {languageOptions.map((option) => (
-                  <option key={`footer-${option.value}`} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
             <div className="mt-3 flex flex-wrap gap-2">
               <a
                 href="https://www.facebook.com/GlobalEnglishYerevan"
