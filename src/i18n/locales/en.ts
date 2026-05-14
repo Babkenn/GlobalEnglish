@@ -48,9 +48,31 @@ export const en: Translation = {
   teachers: {
     title: "Our Teachers",
     cards: [
-      { name: "Ms. Emma", fact: "Fun fact: loves teaching with songs and puppets." },
-      { name: "Mr. Leo", fact: "Fun fact: creates mini speaking adventures each week." },
-      { name: "Ms. Sara", fact: "Fun fact: turns grammar into playful team challenges." },
+      {
+        name: "Ms. Laura",
+        fact: "Fun fact: loves bringing stories and imagination into every lesson.",
+        image: "/teachers/Ms.%20Laura.jpeg",
+      },
+      {
+        name: "Ms. Mary",
+        fact: "Fun fact: encourages shy speakers with gentle games and praise.",
+        image: "/teachers/Ms.%20Mary.jpeg",
+      },
+      {
+        name: "Ms. Yana",
+        fact: "Fun fact: blends movement and English for active young learners.",
+        image: "/teachers/Ms.%20Yana.jpeg",
+      },
+      {
+        name: "Mr. Kasra",
+        fact: "Fun fact: builds confidence through humor and creative projects.",
+        image: "/teachers/Mr.%20Kasra.jpg",
+      },
+      {
+        name: "Ms. Narine",
+        fact: "Fun fact: turns new vocabulary into songs children remember easily.",
+        image: "/teachers/Ms.%20Narine.jpeg",
+      },
     ],
   },
   courses: {

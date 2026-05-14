@@ -37,7 +37,7 @@ export type Translation = {
   };
   teachers: {
     title: string;
-    cards: Array<{ name: string; fact: string }>;
+    cards: Array<{ name: string; fact: string; image: string }>;
   };
   courses: {
     title: string;

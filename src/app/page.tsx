@@ -5,6 +5,15 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { defaultLanguage, translations, type Language } from "@/i18n";
 
+/** `object-position` per file path. Second value = vertical anchor: smaller % (e.g. 15%) shows more of the top of the photo; larger % (e.g. 40%) shifts the crop down. */
+const teacherAvatarFocus: Record<string, string> = {
+  "/teachers/Ms.%20Laura.jpeg": "center 25%",
+  "/teachers/Ms.%20Mary.jpeg": "center 0%",
+  "/teachers/Ms.%20Yana.jpeg": "center 25%",
+  "/teachers/Mr.%20Kasra.jpg": "center 25%",
+  "/teachers/Ms.%20Narine.jpeg": "center 25%",
+};
+
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [language, setLanguage] = useState<Language>(defaultLanguage);
@@ -395,22 +404,26 @@ export default function Home() {
             <h2 className="font-rounded text-3xl font-extrabold text-slate-800">
               {t.teachers.title}
             </h2>
-            <div className="mt-8 grid gap-5 md:grid-cols-3">
-              <article className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-cyan-100">
-                <div className="mb-3 h-20 w-20 rounded-full bg-cyan-100"></div>
-                <h3 className="font-rounded text-xl font-bold">{t.teachers.cards[0].name}</h3>
-                <p className="text-slate-600">{t.teachers.cards[0].fact}</p>
-              </article>
-              <article className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-cyan-100">
-                <div className="mb-3 h-20 w-20 rounded-full bg-cyan-100"></div>
-                <h3 className="font-rounded text-xl font-bold">{t.teachers.cards[1].name}</h3>
-                <p className="text-slate-600">{t.teachers.cards[1].fact}</p>
-              </article>
-              <article className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-cyan-100">
-                <div className="mb-3 h-20 w-20 rounded-full bg-cyan-100"></div>
-                <h3 className="font-rounded text-xl font-bold">{t.teachers.cards[2].name}</h3>
-                <p className="text-slate-600">{t.teachers.cards[2].fact}</p>
-              </article>
+            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+              {t.teachers.cards.map((card) => (
+                <article
+                  key={card.image}
+                  className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-cyan-100"
+                >
+                  <div className="relative mb-4 h-32 w-32 overflow-hidden rounded-full bg-cyan-100 ring-2 ring-cyan-100/80">
+                    <Image
+                      src={card.image}
+                      alt={card.name}
+                      fill
+                      sizes="128px"
+                      className="object-cover"
+                      style={{ objectPosition: teacherAvatarFocus[card.image] ?? "center 25%" }}
+                    />
+                  </div>
+                  <h3 className="font-rounded text-xl font-bold">{card.name}</h3>
+                  <p className="mt-2 text-slate-600">{card.fact}</p>
+                </article>
+              ))}
             </div>
           </div>
         </motion.section>
